@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import roomImg from "./room.png";
-import memberImg from "./member.png";
+import member from "./member.png";
 import "./App.css";
 import { Room } from "./models/room";
 
 function App() {
   const [data, setData] = useState<Room[]>()
-  const [token, setToken] = useState<string>(localStorage.getItem("token") ?? '')
+  const [token, setToken] = useState<string>()
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
-  const [isReload, setIsReload] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   useEffect(() => {
     if (!token) {
@@ -48,41 +47,23 @@ function App() {
         .then(res => res.json())
         .then(
           (result) => {
+            debugger
             setData(result)
           },
           (error) => {
           }
         )
     }
-  }, [token, isReload])
-  const handleJoin = (room: Room) => {
-    fetch("http://api.fuwo.vn/fish-hunter/room/join", {
-      method: "POST",
-      body: JSON.stringify(room),
-      headers: new Headers({
-        'Content-type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      }),
-    })
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setIsReload((isReload) => !isReload);
-          // alert("success " + result)
-          // debugger
-        },
-        (error) => {
-        }
-      )
+  }, [token])
+  console.log(data);
 
-  }
   return (
     <div className="App">
       <div className="main">
         <div className="frame">
           <div className="rooms">
             {data?.map((room, index) =>
-              <div key={room.id} className="room" onClick={() => handleJoin(room)} >
+              <div key={room.id} className="room" >
                 <p className="room_number">
                   {room.id}
                 </p>
@@ -90,7 +71,7 @@ function App() {
                 <div className="room_members">
                   {
                     room.roomMembers.map((member, indexMem) =>
-                      <img src={memberImg} alt="" key={indexMem} />
+                      <img src={member} alt="" key={indexMem} />
                     )
                   }
 

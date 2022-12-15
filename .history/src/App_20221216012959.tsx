@@ -9,7 +9,6 @@ function App() {
   const [data, setData] = useState<Room[]>()
   const [token, setToken] = useState<string>(localStorage.getItem("token") ?? '')
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
-  const [isReload, setIsReload] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   useEffect(() => {
     if (!token) {
@@ -48,13 +47,15 @@ function App() {
         .then(res => res.json())
         .then(
           (result) => {
+            debugger
             setData(result)
           },
           (error) => {
           }
         )
     }
-  }, [token, isReload])
+  }, [token])
+  console.log(data);
   const handleJoin = (room: Room) => {
     fetch("http://api.fuwo.vn/fish-hunter/room/join", {
       method: "POST",
@@ -67,9 +68,8 @@ function App() {
       .then(res => res.json())
       .then(
         (result) => {
-          setIsReload((isReload) => !isReload);
-          // alert("success " + result)
-          // debugger
+          alert("success " + result)
+          debugger
         },
         (error) => {
         }

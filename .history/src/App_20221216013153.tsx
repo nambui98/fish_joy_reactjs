@@ -55,6 +55,7 @@ function App() {
         )
     }
   }, [token, isReload])
+  console.log(data);
   const handleJoin = (room: Room) => {
     fetch("http://api.fuwo.vn/fish-hunter/room/join", {
       method: "POST",

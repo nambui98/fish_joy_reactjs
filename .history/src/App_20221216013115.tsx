@@ -48,6 +48,7 @@ function App() {
         .then(res => res.json())
         .then(
           (result) => {
+            debugger
             setData(result)
           },
           (error) => {
@@ -55,6 +56,7 @@ function App() {
         )
     }
   }, [token, isReload])
+  console.log(data);
   const handleJoin = (room: Room) => {
     fetch("http://api.fuwo.vn/fish-hunter/room/join", {
       method: "POST",
@@ -68,8 +70,8 @@ function App() {
       .then(
         (result) => {
           setIsReload((isReload) => !isReload);
-          // alert("success " + result)
-          // debugger
+          alert("success " + result)
+          debugger
         },
         (error) => {
         }
