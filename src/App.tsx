@@ -13,7 +13,7 @@ function App() {
   const [error, setError] = useState<string>('')
   useEffect(() => {
     if (!token) {
-      fetch("http://api.fuwo.vn/fish-hunter/token", {
+      fetch("https://api.fuwo.vn/fish-hunter/token", {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
@@ -39,7 +39,7 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      fetch("http://api.fuwo.vn/fish-hunter/rooms", {
+      fetch("https://api.fuwo.vn/fish-hunter/rooms", {
         headers: new Headers({
           'Content-type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -56,7 +56,7 @@ function App() {
     }
   }, [token, isReload])
   const handleJoin = (room: Room) => {
-    fetch("http://api.fuwo.vn/fish-hunter/room/join", {
+    fetch("https://api.fuwo.vn/fish-hunter/room/join", {
       method: "POST",
       body: JSON.stringify(room),
       headers: new Headers({
