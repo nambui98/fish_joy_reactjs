@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
 import roomImg from "./room.png";
 import memberImg from "./member.png";
 import "./App.css";
@@ -34,7 +33,7 @@ function App() {
           }
         )
     }
-  }, [])
+  }, [token])
 
 
   useEffect(() => {
@@ -76,6 +75,8 @@ function App() {
       )
 
   }
+  console.log(isLoaded)
+  console.log(error)
   return (
     <div className="App">
       <div className="main">
