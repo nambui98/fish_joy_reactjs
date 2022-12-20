@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-import io, { Manager } from 'socket.io-client';
+import io from 'socket.io-client';
 
-import { ToastContainer, toast } from "react-toastify";
 import roomImg from "./room.png";
 import memberImg from "./member.png";
 import "./App.css";
@@ -16,30 +15,25 @@ function App() {
   const [isReload, setIsReload] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [isConnected, setIsConnected] = useState<boolean>();
-  const [socket, setSocket] = useState<any>();
-  const [timeCountDown, setTimeCountDown] = useState<number>(-1)
-  const [startCountDown, setStartCountDown] = useState(false)
+  const [lastPong, setLastPong] = useState('');
+
+  const socket = io('http://api.fuwo.vn/?playerId=103');
   useEffect(() => {
     if (!token) {
-      const min = 1;
-      const max = 100;
-      const rand = min + Math.random() * (max - min);
       fetch("http://api.fuwo.vn/fish-hunter/token", {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
         },
         body: JSON.stringify({
-          username: 'nam' + rand
+          username: "Nam1"
         })
       })
         .then(res => res.json())
         .then(
           (result) => {
             setToken(result.token)
-            debugger
             localStorage.setItem('token', result.token);
-            localStorage.setItem('user', JSON.stringify(result.user));
           },
           (error) => {
             setIsLoaded(true);
@@ -49,13 +43,6 @@ function App() {
     }
   }, [token])
 
-  useEffect(() => {
-    if (token) {
-      let user = JSON.parse(localStorage.getItem('user')!);
-      setSocket(io(`http://api.fuwo.vn/?playerId=${user.id}`))
-    }
-
-  }, [token])
 
   useEffect(() => {
     if (token) {
@@ -65,20 +52,9 @@ function App() {
           'Authorization': `Bearer ${token}`,
         }),
       })
-        .then(res => {
-
-
-          if (res.ok)
-            return res.json()
-          else {
-            debugger
-            console.log(res) ///error message for server should be in this response object only
-          }
-        })
+        .then(res => res.json())
         .then(
           (result) => {
-            console.log("isreload");
-
             setData(result)
           },
           (error) => {
@@ -95,17 +71,7 @@ function App() {
         'Authorization': `Bearer ${token}`,
       }),
     })
-      .then(res => {
-        if (res.ok)
-          return res.json()
-        else {
-          debugger
-
-          toast("Something went wrong");
-          console.log(res) ///error message for server should be in this response object only
-        }
-
-      })
+      .then(res => res.json())
       .then(
         (result) => {
           setIsReload((isReload) => !isReload);
@@ -113,68 +79,35 @@ function App() {
           // debugger
         },
         (error) => {
-          toast("Wow so easy !");
         }
-      ).catch((error) => { debugger })
+      )
 
   }
-
+  console.log(isLoaded)
+  console.log(error)
   useEffect(() => {
-    if (socket && token) {
-      socket.on('connect', () => {
-        console.log("Connect")
-        setIsConnected(true);
-      });
-      socket.on('room_members_changed', () => {
-        console.log("room_members_changed");
-        setIsReload((isReload) => !isReload);
-      });
-      socket.on('start_game', (res: any) => {
-        debugger
-        setTimeCountDown(res.time);
-        setStartCountDown(res.time);
-        console.log('start_game');
-      });
-      socket.on('game_play', (res: any) => {
-        console.log('game_play');
-      });
-      socket.on('disconnect', () => {
-        setIsConnected(false);
-      });
-      return () => {
-        socket.off('connect');
-        socket.off('game_play');
-        socket.off('start_game');
-        socket.off('room_members_changed');
-        socket.off('disconnect');
-      };
-    }
+    socket.on('connect', () => {
 
-  }, [token, socket]);
-  useEffect(() => {
-    function tick() {
-      setTimeCountDown((time) => {
-        if (time - 1 < 0) {
-          setStartCountDown(false);
-        }
-        return time - 1;
-      });
+      debugger
+      console.log("Connect")
+      setIsConnected(true);
+    });
 
-    }
+    socket.on('disconnect', () => {
+      setIsConnected(false);
+    });
 
-    if (startCountDown) {
-      let interval = setInterval(tick, 1000);
-      return () => clearInterval(interval);
-    } else {
 
-    }
 
-  }, [startCountDown])
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+    };
+  }, []);
 
   const sendPing = () => {
     socket.emit('ping');
   }
-
   return (
     <div className="App">
       <div className="main">
@@ -192,23 +125,29 @@ function App() {
                       <img src={memberImg} alt="" key={indexMem} />
                     )
                   }
+
                 </div>
               </div>
+
             )}
+            {/* {[...Array(100)].map((x, i) =>
+              <div className="room" >
+                <p className="room_number">
+                  {i}
+                </p>
+                <img src={room} alt="" />
+                <div className="room_members">
+                  <img src={member} alt="" />
+                  <img src={member} alt="" />
+                  <img src={member} alt="" />
+                  <img src={member} alt="" />
+                </div>
+              </div>
+
+            )} */}
           </div>
         </div>
-        {
-          startCountDown &&
-          <div className="countDown">
-            <p>
-              {timeCountDown}
-            </p>
-          </div>
-        }
-
-
       </div>
-      <ToastContainer />
     </div>
   );
 }

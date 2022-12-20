@@ -197,6 +197,7 @@ body {
 }
 
 .countDown {
+    font-size: 100px;
     position: absolute;
     inset: 0;
     color: #fef600;
@@ -211,6 +212,4 @@ body {
 
 .countDown p {
     font-weight: 700;
-
-    font-size: 120px;
 }

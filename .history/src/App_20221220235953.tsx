@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import io, { Manager } from 'socket.io-client';
 
-import { ToastContainer, toast } from "react-toastify";
 import roomImg from "./room.png";
 import memberImg from "./member.png";
 import "./App.css";
@@ -49,32 +48,20 @@ function App() {
     }
   }, [token])
 
+
   useEffect(() => {
     if (token) {
       let user = JSON.parse(localStorage.getItem('user')!);
+      debugger
       setSocket(io(`http://api.fuwo.vn/?playerId=${user.id}`))
-    }
-
-  }, [token])
-
-  useEffect(() => {
-    if (token) {
       fetch("http://api.fuwo.vn/fish-hunter/rooms", {
+
         headers: new Headers({
           'Content-type': 'application/json',
           'Authorization': `Bearer ${token}`,
         }),
       })
-        .then(res => {
-
-
-          if (res.ok)
-            return res.json()
-          else {
-            debugger
-            console.log(res) ///error message for server should be in this response object only
-          }
-        })
+        .then(res => res.json())
         .then(
           (result) => {
             console.log("isreload");
@@ -95,17 +82,7 @@ function App() {
         'Authorization': `Bearer ${token}`,
       }),
     })
-      .then(res => {
-        if (res.ok)
-          return res.json()
-        else {
-          debugger
-
-          toast("Something went wrong");
-          console.log(res) ///error message for server should be in this response object only
-        }
-
-      })
+      .then(res => res.json())
       .then(
         (result) => {
           setIsReload((isReload) => !isReload);
@@ -113,9 +90,8 @@ function App() {
           // debugger
         },
         (error) => {
-          toast("Wow so easy !");
         }
-      ).catch((error) => { debugger })
+      )
 
   }
 
@@ -130,7 +106,6 @@ function App() {
         setIsReload((isReload) => !isReload);
       });
       socket.on('start_game', (res: any) => {
-        debugger
         setTimeCountDown(res.time);
         setStartCountDown(res.time);
         console.log('start_game');
@@ -153,23 +128,17 @@ function App() {
   }, [token, socket]);
   useEffect(() => {
     function tick() {
-      setTimeCountDown((time) => {
-        if (time - 1 < 0) {
-          setStartCountDown(false);
-        }
-        return time - 1;
-      });
-
+      setTimeCountDown((time) => time - 1);
     }
 
-    if (startCountDown) {
+    if (timeCountDown >= 0) {
       let interval = setInterval(tick, 1000);
       return () => clearInterval(interval);
     } else {
 
     }
 
-  }, [startCountDown])
+  }, [timeCountDown])
 
   const sendPing = () => {
     socket.emit('ping');
@@ -198,7 +167,7 @@ function App() {
           </div>
         </div>
         {
-          startCountDown &&
+          timeCountDown >= 0 &&
           <div className="countDown">
             <p>
               {timeCountDown}
@@ -208,7 +177,6 @@ function App() {
 
 
       </div>
-      <ToastContainer />
     </div>
   );
 }

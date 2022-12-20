@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import io, { Manager } from 'socket.io-client';
 
-import { ToastContainer, toast } from "react-toastify";
 import roomImg from "./room.png";
 import memberImg from "./member.png";
 import "./App.css";
 import { Room } from "./models/room";
+import { ToastContainer, toast } from "react-toastify";
 
 // const socket = io('http://api.fuwo.vn/?playerId=103');
 function App() {
@@ -101,7 +101,7 @@ function App() {
         else {
           debugger
 
-          toast("Something went wrong");
+          () => toast("Something went wrong");
           console.log(res) ///error message for server should be in this response object only
         }
 

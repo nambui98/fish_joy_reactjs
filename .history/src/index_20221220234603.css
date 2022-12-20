@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: "Inter";
+    font-family: 'Inter';
 }
 
 ::-webkit-scrollbar {
@@ -16,14 +16,14 @@ body {
 .main {
     width: 100vw;
     height: 100vh;
-    background-image: url("../public/bg.jpg");
+    background-image: url('../public/bg.jpg');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
 }
 
 .frame {
-    background-image: url("../public/frame.png");
+    background-image: url('../public/frame.png');
     background-size: cover;
     background-position: top;
     position: absolute;
@@ -31,6 +31,7 @@ body {
     right: 90px;
     left: 90px;
     bottom: 60px;
+
 }
 
 .rooms {
@@ -60,6 +61,7 @@ body {
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
+
 }
 
 .room .room_members {
@@ -77,7 +79,7 @@ body {
     object-fit: contain;
 }
 
-@media screen and (max-width: 1700px) {
+@media screen and (max-width:1700px) {
     .rooms {
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
         height: 350px;
@@ -85,7 +87,7 @@ body {
     }
 }
 
-@media screen and (max-width: 1300px) {
+@media screen and (max-width:1300px) {
     .room .room_number {
         font-size: 40px;
     }
@@ -99,7 +101,7 @@ body {
     }
 }
 
-@media screen and (max-width: 1128px) {
+@media screen and (max-width:1128px) {
     .rooms {
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         height: 350px;
@@ -108,11 +110,10 @@ body {
     }
 }
 
-@media screen and (max-width: 900px) {
-    .frame {
-        background-image: url("../public/frame_mb.png");
-    }
-
+@media screen and (max-width:900px) {
+.frame {
+        background-image: url('../public/frame_mb.png');
+}     
     .rooms {
         /* grid-template-columns: 1fr 1fr 1fr 1fr;
         height: 350px;
@@ -136,13 +137,13 @@ body {
     }
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width:600px) {
     .main {
-        background-image: url("../public/bg_mb.jpg");
+        background-image: url('../public/bg_mb.jpg');
     }
 
     .frame {
-        background-image: url("../public/frame_mb.png");
+        background-image: url('../public/frame_mb.png');
         background-size: contain;
         background-repeat: no-repeat;
         position: absolute;
@@ -173,44 +174,35 @@ body {
         /* width: calc(100% / 3); */
     }
 }
-
 @media screen and (max-height: 900px) {
-    .rooms {
-        height: 500px;
-    }
+  .rooms{
+    height: 500px;
+  }
 }
 
 @media screen and (max-height: 800px) {
-    .rooms {
-        height: 460px;
-    }
+  .rooms{
+    height: 460px;
+  }
 }
 
 @media screen and (max-height: 700px) {
-    .frame {
-        top: 50px;
-    }
-
-    .rooms {
-        height: 480px;
-    }
+  .frame {
+    top: 50px;
+  }
+  .rooms{
+    height: 480px;
+  }
 }
 
-.countDown {
+.countDown{
+    font-size: 100px;
     position: absolute;
     inset: 0;
-    color: #fef600;
-    background-color: rgba(43, 52, 103, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+   color: #fff; 
+   background-color: rgb(43, 52, 103);
     /* top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) !important; */
 }
-
-.countDown p {
-    font-weight: 700;
-
-    font-size: 120px;
-}
+.countDown p{}

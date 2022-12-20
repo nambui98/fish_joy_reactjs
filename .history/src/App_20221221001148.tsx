@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 
 import io, { Manager } from 'socket.io-client';
 
-import { ToastContainer, toast } from "react-toastify";
 import roomImg from "./room.png";
 import memberImg from "./member.png";
 import "./App.css";
 import { Room } from "./models/room";
+import { ToastContainer, toast } from "react-toastify";
 
 // const socket = io('http://api.fuwo.vn/?playerId=103');
 function App() {
@@ -51,6 +51,7 @@ function App() {
 
   useEffect(() => {
     if (token) {
+
       let user = JSON.parse(localStorage.getItem('user')!);
       setSocket(io(`http://api.fuwo.vn/?playerId=${user.id}`))
     }
@@ -60,21 +61,13 @@ function App() {
   useEffect(() => {
     if (token) {
       fetch("http://api.fuwo.vn/fish-hunter/rooms", {
+
         headers: new Headers({
           'Content-type': 'application/json',
           'Authorization': `Bearer ${token}`,
         }),
       })
-        .then(res => {
-
-
-          if (res.ok)
-            return res.json()
-          else {
-            debugger
-            console.log(res) ///error message for server should be in this response object only
-          }
-        })
+        .then(res => res.json())
         .then(
           (result) => {
             console.log("isreload");
@@ -95,17 +88,7 @@ function App() {
         'Authorization': `Bearer ${token}`,
       }),
     })
-      .then(res => {
-        if (res.ok)
-          return res.json()
-        else {
-          debugger
-
-          toast("Something went wrong");
-          console.log(res) ///error message for server should be in this response object only
-        }
-
-      })
+      .then(res => res.json())
       .then(
         (result) => {
           setIsReload((isReload) => !isReload);
