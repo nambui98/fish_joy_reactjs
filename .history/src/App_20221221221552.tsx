@@ -1,22 +1,15 @@
 import React, { useEffect, useState } from "react";
 
 import io, { Manager } from 'socket.io-client';
-import {
-  createBrowserRouter,
-  RouterProvider,
-  useNavigate,
-} from "react-router-dom";
+
 import { ToastContainer, toast } from "react-toastify";
 import roomImg from "./room.png";
 import memberImg from "./member.png";
 import "./App.css";
 import { Room } from "./models/room";
-import { Home } from "./pages";
 
 // const socket = io('http://api.fuwo.vn/?playerId=103');
 function App() {
-
-  const navigate = useNavigate();
   const [data, setData] = useState<Room[]>()
   const [token, setToken] = useState<string>(localStorage.getItem("token") ?? '')
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
@@ -162,10 +155,7 @@ function App() {
     function tick() {
       setTimeCountDown((time) => {
         if (time - 1 < 0) {
-
           setStartCountDown(false);
-          navigate('/game')
-          // window.location.replace('http://localhost:5000/')
         }
         return time - 1;
       });
@@ -184,18 +174,7 @@ function App() {
   const sendPing = () => {
     socket.emit('ping');
   }
-  // return (
-  //   <Switch>
-  //     <Route exact path="/">
-  //       <Home />
-  //     </Route>
-  //     <Route path="/about">
-  //       <About />
-  //     </Route>
-  //     {/* Can also use a named `children` prop */}
-  //     <Route path="/users/:id" children={<User />} />
-  //   </Switch>
-  // )
+
   return (
     <div className="App">
       <div className="main">

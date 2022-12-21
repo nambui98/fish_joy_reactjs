@@ -7,18 +7,13 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import { Game } from './pages';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-  },
-  {
-    path: "/game",
-    element: <Game />,
+    element: <div>Hello world!</div>,
   },
 ]);
 root.render(

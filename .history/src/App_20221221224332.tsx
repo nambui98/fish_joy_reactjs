@@ -4,7 +4,6 @@ import io, { Manager } from 'socket.io-client';
 import {
   createBrowserRouter,
   RouterProvider,
-  useNavigate,
 } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import roomImg from "./room.png";
@@ -15,8 +14,6 @@ import { Home } from "./pages";
 
 // const socket = io('http://api.fuwo.vn/?playerId=103');
 function App() {
-
-  const navigate = useNavigate();
   const [data, setData] = useState<Room[]>()
   const [token, setToken] = useState<string>(localStorage.getItem("token") ?? '')
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
@@ -164,8 +161,8 @@ function App() {
         if (time - 1 < 0) {
 
           setStartCountDown(false);
-          navigate('/game')
-          // window.location.replace('http://localhost:5000/')
+
+          window.location.replace('http://localhost:5000/')
         }
         return time - 1;
       });

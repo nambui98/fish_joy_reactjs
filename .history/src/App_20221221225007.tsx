@@ -165,7 +165,7 @@ function App() {
 
           setStartCountDown(false);
           navigate('/game')
-          // window.location.replace('http://localhost:5000/')
+          window.location.replace('http://localhost:5000/')
         }
         return time - 1;
       });
