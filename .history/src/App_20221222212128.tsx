@@ -16,7 +16,7 @@ import { Room } from "./models/room";
 // const socket = io('http://api.fuwo.vn/?playerId=103');
 function App() {
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [data, setData] = useState<Room[]>()
   const [token, setToken] = useState<string>(localStorage.getItem("token") ?? '')
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
@@ -26,14 +26,12 @@ function App() {
   const [socket, setSocket] = useState<any>();
   const [timeCountDown, setTimeCountDown] = useState<number>(-1)
   const [startCountDown, setStartCountDown] = useState(false)
-  console.log(process.env.REACT_APP_BASE_URL);
-
   useEffect(() => {
     if (!token) {
       const min = 1;
       const max = 100;
       const rand = min + Math.random() * (max - min);
-      fetch(process.env.REACT_APP_BASE_URL + "/fish-hunter/token", {
+      fetch("http://api.fuwo.vn/fish-hunter/token", {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
@@ -61,15 +59,14 @@ function App() {
   useEffect(() => {
     if (token) {
       let user = JSON.parse(localStorage.getItem('user')!);
-      setSocket(io(`${process.env.REACT_APP_BASE_URL}/?playerId=${user.id}`))
-
+      setSocket(io(`http://api.fuwo.vn/?playerId=${user.id}`))
     }
 
   }, [token])
 
   useEffect(() => {
     if (token) {
-      fetch(process.env.REACT_APP_BASE_URL + "/fish-hunter/rooms", {
+      fetch("http://api.fuwo.vn/fish-hunter/rooms", {
         headers: new Headers({
           'Content-type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -97,7 +94,7 @@ function App() {
     }
   }, [token, isReload])
   const handleJoin = (room: Room) => {
-    fetch(process.env.REACT_APP_BASE_URL + "/fish-hunter/room/join", {
+    fetch("http://api.fuwo.vn/fish-hunter/room/join", {
       method: "POST",
       body: JSON.stringify(room),
       headers: new Headers({
@@ -167,8 +164,8 @@ function App() {
         if (time - 1 < 0) {
 
           setStartCountDown(false);
-          // navigate('/game')
-          window.location.replace('http://localhost:5000/')
+          navigate('/game')
+          // window.location.replace('http://localhost:5000/')
         }
         return time - 1;
       });

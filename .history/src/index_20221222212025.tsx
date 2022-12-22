@@ -7,7 +7,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-// import { Game } from './pages';
+import { Game } from './pages';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

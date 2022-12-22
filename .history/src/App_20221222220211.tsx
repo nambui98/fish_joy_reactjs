@@ -33,7 +33,7 @@ function App() {
       const min = 1;
       const max = 100;
       const rand = min + Math.random() * (max - min);
-      fetch(process.env.REACT_APP_BASE_URL + "/fish-hunter/token", {
+      fetch(process.env.BASE_URL + "/fish-hunter/token", {
         method: 'POST',
         headers: {
           'Content-type': 'application/json',
@@ -61,7 +61,7 @@ function App() {
   useEffect(() => {
     if (token) {
       let user = JSON.parse(localStorage.getItem('user')!);
-      setSocket(io(`${process.env.REACT_APP_BASE_URL}/?playerId=${user.id}`))
+      setSocket(io(`${process.env.BASE_URL}/?playerId=${user.id}`))
 
     }
 
@@ -69,7 +69,7 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      fetch(process.env.REACT_APP_BASE_URL + "/fish-hunter/rooms", {
+      fetch(process.env.BASE_URL + "/fish-hunter/rooms", {
         headers: new Headers({
           'Content-type': 'application/json',
           'Authorization': `Bearer ${token}`,
@@ -97,7 +97,7 @@ function App() {
     }
   }, [token, isReload])
   const handleJoin = (room: Room) => {
-    fetch(process.env.REACT_APP_BASE_URL + "/fish-hunter/room/join", {
+    fetch(process.env.BASE_URL + "/fish-hunter/room/join", {
       method: "POST",
       body: JSON.stringify(room),
       headers: new Headers({
