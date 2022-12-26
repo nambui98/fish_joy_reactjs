@@ -125,7 +125,7 @@ class Game {
         const stage = this.render.push(Assets.images.game_bg, new Stage({ game: this }))
         console.log(this.dataFish);
         Fish.onUpdateLocationFish = this.onUpdateLocationFish;
-        debugger
+        // debugger
         Fish.generator.create = Fish.generator.create.bind(this, this.render, Stage.boundary, this.dataFish, this.onUpdateLocationFish)
         const gun = this.render.push(
             Assets.images.cannon2,

@@ -26,7 +26,7 @@ function App() {
   const [socket, setSocket] = useState<any>();
   const [timeCountDown, setTimeCountDown] = useState<number>(-1)
   const [startCountDown, setStartCountDown] = useState(false)
-  console.log(process.env.REACT_APP_BASE_URL);
+  // console.log(process.env.REACT_APP_BASE_URL);
 
   useEffect(() => {
     if (!token) {
@@ -62,9 +62,7 @@ function App() {
     if (token) {
       let user = JSON.parse(localStorage.getItem('user')!);
       setSocket(io(`${process.env.REACT_APP_BASE_URL}/?playerId=${user.id}`))
-
     }
-
   }, [token])
 
   useEffect(() => {
@@ -76,19 +74,15 @@ function App() {
         }),
       })
         .then(res => {
-
-
           if (res.ok)
             return res.json()
           else {
             debugger
-            console.log(res) ///error message for server should be in this response object only
           }
         })
         .then(
           (result) => {
             console.log("isreload");
-
             setData(result)
           },
           (error) => {
@@ -110,23 +104,18 @@ function App() {
           return res.json()
         else {
           debugger
-
           toast("Something went wrong");
           console.log(res) ///error message for server should be in this response object only
         }
-
       })
       .then(
         (result) => {
           setIsReload((isReload) => !isReload);
-          // alert("success " + result)
-          // debugger
         },
         (error) => {
           toast("Wow so easy !");
         }
       ).catch((error) => { debugger })
-
   }
 
   useEffect(() => {
@@ -145,15 +134,12 @@ function App() {
         setStartCountDown(res.time);
         console.log('start_game');
       });
-      socket.on('game_play', (res: any) => {
-        console.log('game_play');
-      });
+
       socket.on('disconnect', () => {
         setIsConnected(false);
       });
       return () => {
         socket.off('connect');
-        socket.off('game_play');
         socket.off('start_game');
         socket.off('room_members_changed');
         socket.off('disconnect');
@@ -168,7 +154,7 @@ function App() {
 
           setStartCountDown(false);
           // navigate('/game')
-          window.location.replace('http://localhost:5000/')
+          window.location.replace('/game.html')
         }
         return time - 1;
       });
