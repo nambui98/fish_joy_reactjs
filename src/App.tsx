@@ -23,7 +23,7 @@ function App() {
   const [isReload, setIsReload] = useState<boolean>(false)
   const [error, setError] = useState<string>('')
   const [isConnected, setIsConnected] = useState<boolean>();
-  const [socket, setSocket] = useState<any>();
+  const [socket, setSocket] = useState<any>(null);
   const [timeCountDown, setTimeCountDown] = useState<number>(-1)
   const [startCountDown, setStartCountDown] = useState(false)
   // console.log(process.env.REACT_APP_BASE_URL);
@@ -61,7 +61,11 @@ function App() {
   useEffect(() => {
     if (token) {
       let user = JSON.parse(localStorage.getItem('user')!);
-      setSocket(io(`${process.env.REACT_APP_BASE_URL}/?playerId=${user.id}`))
+      console.log(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`);
+
+      let socket = io(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`);
+      debugger
+      setSocket(socket)
     }
   }, [token])
 
@@ -122,13 +126,24 @@ function App() {
     if (socket && token) {
       socket.on('connect', () => {
         console.log("Connected")
+        debugger
         setIsConnected(true);
       });
       socket.on('room_members_changed', () => {
         console.log("room_members_changed");
         setIsReload((isReload) => !isReload);
       });
+      socket.on('start_game', () => {
+        console.log("start_game");
+        // setIsReload((isReload) => !isReload);
+      });
+      socket.on('game_play', () => {
+        console.log("game_play");
+        // setIsReload((isReload) => !isReload);
+      });
       socket.on('start_game', (res: any) => {
+
+        console.log('start_game');
         debugger
         setTimeCountDown(res.time);
         setStartCountDown(res.time);
@@ -140,7 +155,7 @@ function App() {
       });
       return () => {
         socket.off('connect');
-        socket.off('start_game');
+        // socket.off('start_game');
         socket.off('room_members_changed');
         socket.off('disconnect');
       };
