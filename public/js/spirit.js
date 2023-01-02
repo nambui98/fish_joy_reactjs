@@ -166,7 +166,7 @@ class Gun extends Item {
     }
 
     click(render, event) {
-        debugger
+        // debugger
         //if (this.bullet != null) return
         const { x: sx, y: sy } = this.getAngle(this.rotate, { x: event.offsetX, y: event.offsetY })
         const hypotenuse = Math.sqrt(Math.pow(sx, 2) + Math.pow(sy, 2))
@@ -258,7 +258,7 @@ class Bullet extends Item {
         let flag = false
         const capture = (collision, callback = null, single = false) => {
             for (const fish of Fish.generator.sets) {
-                debugger
+                // debugger
                 if (collision.detect(fish.collision)) {
                     this.isCollided = true
                     if (!single && fish.canBeCaptured(this.level)) {
@@ -339,14 +339,17 @@ class Fish extends Item {
     // constructor({ onUpdateLocationFish }) {
     //     this.onUpdateLocationFish = onUpdateLocationFish;
     // }
-    static onUpdateLocationFish;
+    // static onUpdateLocationFish;
     static generator = {
         rand: new Rand(),
 
         amount: 1,
         sets: new Set(),
         delete: function (fish) { Fish.generator.sets.delete(fish) }.bind(this),
-        create: function (render, boundary, dataFish, onUpdateLocationFish) {
+        init: (render, boundary) => {
+            render.push([]);
+        },
+        create: function (render, boundary, dataFish) {
 
             if (Fish.generator.sets.size == Fish.generator.amount) return
             debugger
@@ -398,22 +401,27 @@ class Fish extends Item {
             // },
             // fish = render.push(Assets.images[`fish${props.level}`], new Fish(props), 2);
             // console.log(fish);
-            let listFish = dataFish.map(f => {
-                const props = {
-                    id: f.id,
-                    x: f.x, y: f.y,
-                    vx: f.vx, vy: f.vy,
-                    angle: f.angle,
-                    speed: 1.,//- .5,
-                    level: f.level,
-                    boundary: boundary,
-                    onUpdateLocationFish,
-                    game: this
-                }
-                let renderFish = render.push(Assets.images[`fish${f.level}`], new Fish(props), 2);
-                Fish.generator.sets.add(renderFish)
-                return renderFish;
-            })
+            let listFish;
+            if (dataFish.length > 0) {
+                listFish = dataFish.map(f => {
+                    const props = {
+                        id: f.id,
+                        x: f.x, y: f.y,
+                        vx: f.vx, vy: f.vy,
+                        angle: f.angle,
+                        speed: 1.,//- .5,
+                        level: f.level,
+                        boundary: boundary,
+                        // onUpdateLocationFish,
+                        game: this
+                    }
+                    let renderFish = render.push(Assets.images[`fish${f.level}`], new Fish(props), 2);
+                    Fish.generator.sets.add(renderFish)
+                    return renderFish;
+                })
+            } else {
+                listFish = [render.push()]
+            }
             // console.log(listFish);
             // let fishOne = dataFish.data[0];
             // const props = {
@@ -542,7 +550,7 @@ class Fish extends Item {
 
     tick(render) {
         //switch spirit frame
-        console.log("vao day fish");
+        // console.log("vao day fish");
         if (++this.timer.index > this.timer.interval) {
             this.timer.index = 0
             this.frame.index++
@@ -572,14 +580,14 @@ class Fish extends Item {
         }
         //update moving position
         this.y += this.vy * this.speed, this.x += this.vx * this.speed
-        console.log("x ", this.x);
-        console.log("y ", this.y);
+        // console.log("x ", this.x);
+        // console.log("y ", this.y);
         // debugger
-        this.onUpdateLocationFish({
-            x: this.x,
-            y: this.y,
-            id: this.id
-        })
+        // this.onUpdateLocationFish({
+        //     x: this.x,
+        //     y: this.y,
+        //     id: this.id
+        // })
         // debugger
         //out of boundary
         const size = Fish.config[this.level].size,

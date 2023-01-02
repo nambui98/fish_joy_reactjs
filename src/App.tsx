@@ -11,12 +11,9 @@ import roomImg from "./room.png";
 import memberImg from "./member.png";
 import "./App.css";
 import { Room } from "./models/room";
-// import { Home } from "./pages";
+import 'react-toastify/dist/ReactToastify.css';
 
-// const socket = io('http://api.fuwo.vn/?playerId=103');
 function App() {
-
-  // const navigate = useNavigate();
   const [data, setData] = useState<Room[]>()
   const [token, setToken] = useState<string>(localStorage.getItem("token") ?? '')
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
@@ -26,7 +23,6 @@ function App() {
   const [socket, setSocket] = useState<any>(null);
   const [timeCountDown, setTimeCountDown] = useState<number>(-1)
   const [startCountDown, setStartCountDown] = useState(false)
-  // console.log(process.env.REACT_APP_BASE_URL);
 
   useEffect(() => {
     if (!token) {
@@ -46,9 +42,9 @@ function App() {
         .then(
           (result) => {
             setToken(result.token)
-            debugger
             localStorage.setItem('token', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
+            localStorage.setItem('id', JSON.stringify(result.user.id));
           },
           (error) => {
             setIsLoaded(true);
@@ -62,9 +58,7 @@ function App() {
     if (token) {
       let user = JSON.parse(localStorage.getItem('user')!);
       console.log(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`);
-
-      let socket = io(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`);
-      debugger
+      let socket = io(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`, { autoConnect: true, transports: ['websocket'], upgrade: false });
       setSocket(socket)
     }
   }, [token])
@@ -81,7 +75,6 @@ function App() {
           if (res.ok)
             return res.json()
           else {
-            debugger
           }
         })
         .then(
@@ -124,40 +117,28 @@ function App() {
 
   useEffect(() => {
     if (socket && token) {
+      socket.on('disconnect', () => {
+        console.log('user disconnected');
+      });
       socket.on('connect', () => {
-        console.log("Connected")
-        debugger
         setIsConnected(true);
       });
       socket.on('room_members_changed', () => {
         console.log("room_members_changed");
         setIsReload((isReload) => !isReload);
       });
-      socket.on('start_game', () => {
-        console.log("start_game");
-        // setIsReload((isReload) => !isReload);
-      });
-      socket.on('game_play', () => {
-        console.log("game_play");
-        // setIsReload((isReload) => !isReload);
-      });
-      socket.on('start_game', (res: any) => {
-
-        console.log('start_game');
-        debugger
-        setTimeCountDown(res.time);
-        setStartCountDown(res.time);
-        console.log('start_game');
-      });
-
+      socket.on('init_game', () => {
+        console.log('init_game');
+        window.location.href = '/game.html'
+      })
       socket.on('disconnect', () => {
-        setIsConnected(false);
       });
       return () => {
-        socket.off('connect');
+        socket.disconnect();
+        // socket.off('connect');
         // socket.off('start_game');
-        socket.off('room_members_changed');
-        socket.off('disconnect');
+        // socket.off('room_members_changed');
+        // socket.off('disconnect');
       };
     }
 
@@ -169,7 +150,7 @@ function App() {
 
           setStartCountDown(false);
           // navigate('/game')
-          window.location.replace('/game.html')
+          window.location.href = '/game.html'
         }
         return time - 1;
       });
