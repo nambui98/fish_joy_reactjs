@@ -26,15 +26,26 @@ class Render {
 
     mouseMove(event) {
         event = event || window.event
+        console.log(event);
         this.ctx.save()
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0)
-        console.log(this.elements);
+        // this.ctx.setTransform(1, 0, 0, 1, 0, 0)
+        // this.ctx.setTransform(1, 0.2, 0.8, 1, 0, 0);
+        this.ctx.fillStyle = '#444';
+        // i
+        // this.ctx.fillStyle = 'gray';
+        // this.ctx.fillRect(0, 0, 500, 500);
+        // console.log(this.elements);
         user = JSON.parse(localStorage.getItem('user'))
         this.elements.mouseMove.forEach(item => {
             if (item.mouse?.move)
                 for (const { area, handle } of item.mouse.move) {
+
+                    console.log(event.offsetY);
                     if (this.ctx.isPointInPath(area, event.offsetX, event.offsetY)) {
+                        console.log("----------------");
+                        console.log(event.offsetX);
                         if (user.id === item.id) {
+                            console.log();
                             handle(event)
                             return
                         }
@@ -121,7 +132,6 @@ class Render {
 }
 
 class Game {
-
     constructor({ dataFish, members }) {
         const scene = document.querySelector('#game_box')
         Game.dpiOptimize(scene)
@@ -129,58 +139,118 @@ class Game {
         this.data = { score: 0 }
         this.dataFish = dataFish;
         this.members = members;
-        // this.onUpdateLocationFish = onUpdateLocationFish;
         this.init()
     }
     loadGun() {
         let members = JSON.parse(localStorage.getItem('members'))
-        console.log("load gun");
-        members.forEach((element, index) => {
-            const gun = this.render.push(
-                Assets.images.cannon1,
-                new Gun({
-                    ctx: this.render.ctx, x: 100, y: 0, speed: 0, level: 1,
-                    id: element.id,
-                    initX: index * 300,
-                    game: this,
-                }), 6
-            ).attach(item => {
-                const mouseMove = []
-                {
-                    const path = new Path2D()
-                    path.rect(0, 0, this.render.ctx.width, this.render.ctx.height)
-                    mouseMove.push({ area: path, handle: item.aim.bind(item) })
-                }
-                const mouseClick = []
-                {
-                    const path = new Path2D()
-                    path.rect(0, 0, this.render.ctx.width, this.render.ctx.height)
-                    mouseClick.push({ area: path, handle: item.click.bind(item, this.render) })
-                }
-                item.mouse = { move: mouseMove, click: mouseClick }
-            })
+        if (members.length === 2) {
+            members.forEach((element, index) => {
+                const gun = this.render.push(
+                    Assets.images.cannon1,
+                    new Gun({
+                        ctx: this.render.ctx, x: 100, y: 0, speed: 0, level: 1,
+                        id: element.id,
+                        initX: 0,
+                        initY: index === 1 ? - this.render.ctx.height + 65 : 0,
+                        initAngle: index === 1 ? Math.PI : 0,
+                        game: this,
+                    }), 6
+                ).attach(item => {
+                    const mouseMove = []
+                    {
+                        const path = new Path2D()
+                        path.rect(0, 0, this.render.ctx.width, this.render.ctx.height)
+                        // path.rect(-500, -500, this.render.ctx.width, this.render.ctx.height)
+                        // console.log("===========");
+                        // console.log(path);
+                        mouseMove.push({ area: path, handle: item.aim.bind(item) })
+                    }
+                    const mouseClick = []
+                    {
+                        const path = new Path2D()
+                        path.rect(1, 0, this.render.ctx.width, this.render.ctx.height)
+                        mouseClick.push({ area: path, handle: item.click.bind(item, this.render) })
+                    }
+                    item.mouse = { move: mouseMove, click: mouseClick }
+                })
 
-            this.render.push(
-                Assets.images.bottom,
-                new Bar({ gun: gun, game: this }), 4
-            ).attach(item => {
-                const listeners = []
-                const button = item.gunButton
-                const relative = { x: button.pos.x + button.divide, y: this.render.ctx.height - button.data.h, spacing: 130 }
-                {
-                    const path = new Path2D()
-                    path.rect(relative.x, relative.y, button.data.w, button.data.h)
-                    listeners.push({ area: path, handle: item.add.bind(item, true) })
-                }
-                {
-                    const path = new Path2D()
-                    path.rect(relative.x + relative.spacing, relative.y, button.data.w, button.data.h)
-                    listeners.push({ area: path, handle: item.add.bind(item, false) })
-                }
-                item.mouse = { click: listeners }
-            })
+                this.render.push(
+                    index === 1 ? Assets.images.bottomTop : Assets.images.bottom,
+                    new Bar({ gun: gun, game: this, initY: index === 0 ? -15 : 0, initX: index === 1 ? this.render.ctx.width - 250 : 0, offsetY: index === 1 ? 1 : 0 }), 4
+                ).attach(item => {
+                    // const listeners = []
+                    // const button = item.gunButton
+                    // const relative = { x: button.pos.x + button.divide, y: this.render.ctx.height - button.data.h, spacing: 130 }
+                    // {
+                    //     const path = new Path2D()
+                    //     path.rect(relative.x, relative.y, button.data.w, button.data.h)
+                    //     listeners.push({ area: path, handle: item.add.bind(item, true) })
+                    // }
+                    // {
+                    //     const path = new Path2D()
+                    //     path.rect(relative.x + relative.spacing, relative.y, button.data.w, button.data.h)
+                    //     listeners.push({ area: path, handle: item.add.bind(item, false) })
+                    // }
+                    // item.mouse = { click: listeners }
+                })
 
-        });
+            });
+        } else {
+            members.forEach((element, index) => {
+                const gun = this.render.push(
+                    Assets.images.cannon1,
+                    new Gun({
+                        ctx: this.render.ctx, x: 100, y: 0, speed: 0, level: 1,
+                        id: element.id,
+                        isDown: index === 2 || index === 3,
+                        initX: index === 0 || index === 2 ? 300 : index === 1 || index === 3 ? -300 : 0,
+                        initY: index === 2 || index === 3 ? - this.render.ctx.height + 65 : 0,
+                        initAngle: index === 2 || index === 3 ? Math.PI : 0,
+                        game: this,
+                    }), 6
+                ).attach(item => {
+                    const mouseMove = []
+                    {
+                        const path = new Path2D()
+                        path.rect(0, 0, this.render.ctx.width, this.render.ctx.height)
+                        // path.rect(-500, -500, this.render.ctx.width, this.render.ctx.height)
+                        // console.log("===========");
+                        // console.log(path);
+                        mouseMove.push({ area: path, handle: item.aim.bind(item) })
+                    }
+                    const mouseClick = []
+                    {
+                        const path = new Path2D()
+                        path.rect(1, 0, this.render.ctx.width, this.render.ctx.height)
+                        mouseClick.push({ area: path, handle: item.click.bind(item, this.render) })
+                    }
+                    item.mouse = { move: mouseMove, click: mouseClick }
+                })
+
+                this.render.push(
+                    index === 2 || index === 3 ? Assets.images.bottomTop : Assets.images.bottom,
+                    new Bar({ gun: gun, game: this, initY: index === 0 || index === 1 ? -15 : 0, initX: index === 0 || index === 2 ? this.render.ctx.width - 550 : 400, offsetY: index === 2 || index === 3 ? 1 : 0, offsetX: index === 0 || index === 2 ? 300 : -300 }), 4
+                ).attach(item => {
+                    // const listeners = []
+                    // const button = item.gunButton
+                    // const relative = { x: button.pos.x + button.divide, y: this.render.ctx.height - button.data.h, spacing: 130 }
+                    // {
+                    //     const path = new Path2D()
+                    //     path.rect(relative.x, relative.y, button.data.w, button.data.h)
+                    //     listeners.push({ area: path, handle: item.add.bind(item, true) })
+                    // }
+                    // {
+                    //     const path = new Path2D()
+                    //     path.rect(relative.x + relative.spacing, relative.y, button.data.w, button.data.h)
+                    //     listeners.push({ area: path, handle: item.add.bind(item, false) })
+                    // }
+                    // item.mouse = { click: listeners }
+                })
+
+            });
+
+        }
+
     }
     init() {
         const stage = this.render.push(Assets.images.game_bg, new Stage({ game: this }))

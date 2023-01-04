@@ -9,7 +9,7 @@ var canvas = document.getElementById("game_box"),
     W = window.innerWidth,
     H = window.innerHeight;
 window.onload = async function () {
-    debugger
+    // debugger
     await Spirit.loadResource(Assets.path, Assets.images)
     let dataFish = [
         {
@@ -178,7 +178,7 @@ socket.on('connect', async () => {
 })
 let dataFish = [];
 socket.on('common_data', (e) => {
-    debugger
+    // debugger
 })
 socket.on("game_result", () => {
     console.log("GAME_RESULT");
@@ -205,14 +205,14 @@ socket.on("start_game", async (data) => {
 
 });
 function startGame() {
-    debugger
+    // debugger
     // Spirit.loadResource(Assets.path, Assets.images)
     // debugger
     // game = new Game({ dataFish, onUpdateLocationFish: onUpdateLocationFish })
 }
 startGame();
 socket.on("game_play", async (data) => {
-    debugger
+    // debugger
     console.log("map");
     console.log(data.fishAssets);
     if (dataFish.length === 0) {
@@ -238,7 +238,7 @@ socket.on("map", async (data) => {
 });
 //other users get updated with new players when teh new player joins
 window.addEventListener('beforeunload', () => {
-    debugger
+    // debugger
     socket.disconnect();
     // socket.off('disconnect')
 })

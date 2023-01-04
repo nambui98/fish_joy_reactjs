@@ -134,7 +134,8 @@ class Stage extends Item {
 class Gun extends Item {
     init() {
         // this.xOffset = 42, this.yOffset = 10, this.angle = 0
-        this.xOffset = this.initX || 0, this.yOffset = 10, this.angle = 0
+        this.xOffset = this.initX || 0, this.yOffset = this.initY || 10, this.angle = this.initAngle || 0
+
         this.bullet = null
         this.timer = { interval: 2, index: 0, time: 100 }
         this.frame = { index: 0, max: 5 }
@@ -162,6 +163,7 @@ class Gun extends Item {
     aim(event) {
         // debugger
         this.point = { x: event.offsetX, y: event.offsetY }
+        console.log('point ', this.point);
         this.getAngle(this.rotate, this.point)
     }
 
@@ -172,7 +174,7 @@ class Gun extends Item {
         const hypotenuse = Math.sqrt(Math.pow(sx, 2) + Math.pow(sy, 2))
         const props = {
             x: this.rotate.x, y: this.rotate.y,
-            vx: sx / hypotenuse, vy: sy / hypotenuse,
+            vx: sx / hypotenuse, vy: this.isDown ? -sy / hypotenuse : sy / hypotenuse,
             angle: this.angle,
             speed: 5,
             level: this.level,
@@ -188,18 +190,21 @@ class Gun extends Item {
     getAngle(center, point) {
         const pos = { x: point.x - center.x, y: Math.abs(point.y - center.y) }
         const angle = Math.atan2(pos.x, pos.y)
-        this.angle = angle
+        this.angle = this.isDown ? Math.PI - angle : angle
+        // console.log(angle * 180 / Math.PI);
         return pos
     }
 
     draw(ctx) {
         const { img, start, rotate, angle } = this
         const width = img.width, height = img.height / 5
+        // debugger
         // const ratio = 6
         // const width = 161 * ratio, height = 187 * ratio / 5
         ctx.save()
-        //this.getAngle(rotate)
+        // this.getAngle(rotate)
         ctx.translate(rotate.x, rotate.y) //rotate center
+        // console.log(angle);
         ctx.rotate(angle)
         ctx.translate(-rotate.x, -rotate.y)
         ctx.translate(start.x, start.y)
@@ -352,7 +357,7 @@ class Fish extends Item {
         create: function (render, boundary, dataFish) {
 
             if (Fish.generator.sets.size == Fish.generator.amount) return
-            debugger
+            // debugger
             // const rand = Fish.generator.rand,
             //     level = Math.trunc(rand.gen(1, 13))
             //     // level = 12
@@ -678,6 +683,8 @@ class CoinText extends Item {
 
 class Bar extends Item {
     init() {
+        this.offsetXScore = this.initX || 100
+        this.offsetYScore = this.initY || 0
         this.gunButton = { pos: { x: 360, y: 0 }, cut: { x: 0, y: 75 }, data: { w: 36, h: 28 }, divide: 4 }
         this.text = { img: Assets.images.number_black, type: { x: 0, y: 0, w: 20, h: 24 } }
     }
@@ -690,10 +697,79 @@ class Bar extends Item {
         // ctx.drawImage(this.img, 0, 0, width, height, 0, 0, this.img.width, height)
         const ratio = 0.5;
         const width = 466 * ratio, height = 103 * ratio
+        const widthScore = 286 * ratio, heightScore = 135 * ratio
         const gunButton = this.gunButton
         ctx.save()
-        ctx.translate(0, ctx.height - height)
+        ctx.translate(this.offsetX || 0, this.offsetY || ctx.height - height)
         ctx.drawImage(this.img, ctx.width / 2 - (width / 2), 0, width, height)
+        ctx.drawImage(Assets.images.border, this.offsetXScore, this.offsetYScore, widthScore, heightScore)
+
+        ctx.restore()
+
+        ctx.save()
+        // ctx.translate(gunButton.pos.x, ctx.height - gunButton.data.h)
+        // const delta = (gunButton.divide.w - gunButton.data.w) / 2
+        //draw plus button
+        // ctx.drawImage(this.img,
+        //     gunButton.cut.x + 1 * (gunButton.data.w + gunButton.divide * 2) + gunButton.divide, gunButton.cut.y,
+        //     gunButton.data.w, gunButton.data.h,
+        //     gunButton.divide, 0, gunButton.data.w, gunButton.data.h)
+        //draw sub button
+        // ctx.drawImage(this.img,
+        //     gunButton.cut.x + 3 * (gunButton.data.w + gunButton.divide * 2) + gunButton.divide, gunButton.cut.y,
+        //     gunButton.data.w, gunButton.data.h,
+        //     130 + gunButton.divide, 0, gunButton.data.w, gunButton.data.h)
+        // ctx.restore()
+        //draw click area
+        // ctx.save()
+        // ctx.strokeStyle = 'white'
+        // for (let click of this.mouse.click)
+        //     ctx.stroke(click.area)
+        // ctx.restore()
+        //draw score text
+        // const num = [...this.game.data.score.toString()]
+        // const text_space = [20, 43, 65, 87, 111, 135]
+        // num.forEach((val, index) => {
+        //     ctx.save()
+        //     ctx.translate(ctx.width / 2 - this.img.width / 2 + 10, ctx.height - this.text.type.h + 8)
+        //     ctx.translate(text_space[index + 6 - num.length], 0)
+        //     ctx.drawImage(this.text.img,
+        //         this.text.type.x, this.text.type.y + this.text.type.h * parseInt(9 - val), this.text.type.w, this.text.type.h,
+        //         this.text.type.w / -2, this.text.type.h / -2, this.text.type.w, this.text.type.h)
+        //     ctx.restore()
+        // })
+    }
+
+    add(inc, event) {
+        const gun = this.gun
+        if (inc) {
+            if (gun.level < 7) gun.level++;
+        }
+        else {
+            if (gun.level > 1) gun.level--;
+        }
+    }
+}
+class Score extends Item {
+    init() {
+
+        this.gunButton = { pos: { x: 360, y: 0 }, cut: { x: 0, y: 75 }, data: { w: 36, h: 28 }, divide: 4 }
+        this.text = { img: Assets.images.number_black, type: { x: 0, y: 0, w: 20, h: 24 } }
+    }
+
+    draw(ctx) {
+        // const width = this.img.width, height = 72
+        // const gunButton = this.gunButton
+        // ctx.save()
+        // ctx.translate(ctx.width / 2 - this.img.width / 2, ctx.height - height)
+        // ctx.drawImage(this.img, 0, 0, width, height, 0, 0, this.img.width, height)
+        const ratio = 5;
+        const width = 466 * ratio, height = 103 * ratio
+        // const gunButton = this.gunButton
+        ctx.save()
+        ctx.translate(0, this.offsetY || ctx.height - height)
+        // ctx.drawImage(this.img, ctx.width / 2 - (width / 2), 0, width, height)
+        ctx.drawImage(this.img, 0, 0, width, height)
 
         ctx.restore()
 

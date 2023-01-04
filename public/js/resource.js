@@ -13,6 +13,8 @@ const Assets = {
         fish11: "images/shark1.png",
         fish12: "images/shark2.png",
         bottom: "images/bottom2.png",
+        bottomTop: "images/bottom3.png",
+        border: "images/border.png",
         cannon1: "images/cannon1.png",
         cannon2: "images/cannon2.png",
         cannon3: "images/cannon3.png",

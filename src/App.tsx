@@ -100,7 +100,7 @@ function App() {
         if (res.ok)
           return res.json()
         else {
-          debugger
+          // debugger
           toast("Something went wrong");
           console.log(res) ///error message for server should be in this response object only
         }
