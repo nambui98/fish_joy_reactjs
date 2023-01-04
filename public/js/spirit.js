@@ -172,7 +172,7 @@ class Gun extends Item {
         const hypotenuse = Math.sqrt(Math.pow(sx, 2) + Math.pow(sy, 2))
         const props = {
             x: this.rotate.x, y: this.rotate.y,
-            vx: sx / hypotenuse, vy: sy / hypotenuse,
+            vx: sx / hypotenuse, vy: -sy / hypotenuse,
             angle: this.angle,
             speed: 5,
             level: this.level,
@@ -188,7 +188,7 @@ class Gun extends Item {
     getAngle(center, point) {
         const pos = { x: point.x - center.x, y: Math.abs(point.y - center.y) }
         const angle = Math.atan2(pos.x, pos.y)
-        this.angle = angle
+        this.angle = Math.PI - angle
         return pos
     }
 
