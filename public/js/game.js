@@ -26,7 +26,7 @@ class Render {
 
     mouseMove(event) {
         event = event || window.event
-        console.log(event);
+        // console.log(event);
         this.ctx.save()
         // this.ctx.setTransform(1, 0, 0, 1, 0, 0)
         // this.ctx.setTransform(1, 0.2, 0.8, 1, 0, 0);
@@ -40,12 +40,12 @@ class Render {
             if (item.mouse?.move)
                 for (const { area, handle } of item.mouse.move) {
 
-                    console.log(event.offsetY);
+                    // console.log(event.offsetY);
                     if (this.ctx.isPointInPath(area, event.offsetX, event.offsetY)) {
-                        console.log("----------------");
-                        console.log(event.offsetX);
+                        // console.log("----------------");
+                        // console.log(event.offsetX);
                         if (user.id === item.id) {
-                            console.log();
+                            // console.log();
                             handle(event)
                             return
                         }
@@ -79,7 +79,9 @@ class Render {
 
     restart() {
         this.over = false
-        if (!this.handle) cancelAnimationFrame(this.handle)
+        debugger
+        if (!this.handle)
+            cancelAnimationFrame(this.handle)
         this.loop()
     }
 
@@ -261,7 +263,7 @@ class Game {
         // Fish.onUpdateLocationFish = this.onUpdateLocationFish;
         // debugger
         Fish.generator.create = Fish.generator.create.bind(this, this.render, Stage.boundary, this.dataFish)
-
+        debugger
         this.loadGun();
         for (let i = 0; i < Fish.generator.amount; i++) Fish.generator.create()
         // this.render.push(Assets.images.web, new Web({ x: 200, y: 200, level: 1 }), 2)
@@ -269,6 +271,7 @@ class Game {
 
     play() {
         console.log("restart");
+        debugger
         this.render.restart()
     }
 
@@ -303,7 +306,7 @@ class Game {
     }
 }
 
-let game
+// let game
 // (function () {
 //     const canvas = document.getElementById('game_box');
 //     const context = canvas.getContext('2d');

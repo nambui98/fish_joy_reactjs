@@ -57,9 +57,12 @@ function App() {
   useEffect(() => {
     if (token) {
       let user = JSON.parse(localStorage.getItem('user')!);
-      console.log(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`);
-      let socket = io(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`, { autoConnect: true, transports: ['websocket'], upgrade: false });
-      setSocket(socket)
+      // console.log(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`);
+      let socket = io(`${process.env.REACT_APP_BASE_URL}?playerId=${user.id}`);
+      // socket.disconnect();
+      if (!isConnected) {
+        setSocket(socket)
+      }
     }
   }, [token])
 
@@ -107,6 +110,7 @@ function App() {
       })
       .then(
         (result) => {
+          debugger
           setIsReload((isReload) => !isReload);
         },
         (error) => {
@@ -117,10 +121,8 @@ function App() {
 
   useEffect(() => {
     if (socket && token) {
-      socket.on('disconnect', () => {
-        console.log('user disconnected');
-      });
       socket.on('connect', () => {
+        debugger
         setIsConnected(true);
       });
       socket.on('room_members_changed', () => {
@@ -129,13 +131,16 @@ function App() {
       });
       socket.on('init_game', (res: any) => {
         console.log('init_game');
+        debugger
         localStorage.setItem('members', JSON.stringify(res.roomMembers))
         window.location.href = '/game.html'
       })
       socket.on('disconnect', () => {
+        setIsConnected(false)
       });
       return () => {
-        socket.disconnect();
+        socket.disconnect()
+        // socket.disconnect();
         // socket.off('connect');
         // socket.off('start_game');
         // socket.off('room_members_changed');
