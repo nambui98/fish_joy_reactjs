@@ -127,8 +127,9 @@ function App() {
         console.log("room_members_changed");
         setIsReload((isReload) => !isReload);
       });
-      socket.on('init_game', () => {
+      socket.on('init_game', (res: any) => {
         console.log('init_game');
+        localStorage.setItem('members', JSON.stringify(res.roomMembers))
         window.location.href = '/game.html'
       })
       socket.on('disconnect', () => {

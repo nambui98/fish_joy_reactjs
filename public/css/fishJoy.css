@@ -10,3 +10,23 @@ html, body {
     padding: 0;
 overflow: hidden;
 }
+.countDown {
+
+    font-family: "Inter";
+    position: absolute;
+    inset: 0;
+    color: #fef600;
+    background-color: rgba(43, 52, 103, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important; */
+}
+
+.countDown p {
+    font-weight: 700;
+
+    font-size: 120px;
+}
