@@ -111,6 +111,8 @@ function App() {
       .then(
         (result) => {
           debugger
+
+          window.location.href = '/game.html'
           setIsReload((isReload) => !isReload);
         },
         (error) => {

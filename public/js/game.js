@@ -1,3 +1,5 @@
+// import singletonFishs from "./patterns"
+
 class Rand {
     constructor(_seed = Math.floor(new Date().getMilliseconds())) {
         this.seed = _seed
@@ -134,13 +136,13 @@ class Render {
 }
 
 class Game {
-    constructor({ dataFish, members }) {
+    constructor() {
         const scene = document.querySelector('#game_box')
         Game.dpiOptimize(scene)
         this.render = new Render(scene)
         this.data = { score: 0 }
-        this.dataFish = dataFish;
-        this.members = members;
+        // this.dataFish = singletonFishs.getFishs();
+        // this.members = members;
         this.init()
     }
     loadGun() {
@@ -262,7 +264,7 @@ class Game {
         // console.log(this.dataFish);
         // Fish.onUpdateLocationFish = this.onUpdateLocationFish;
         // debugger
-        Fish.generator.create = Fish.generator.create.bind(this, this.render, Stage.boundary, this.dataFish)
+        Fish.generator.create = Fish.generator.create.bind(this, this.render, Stage.boundary, singletonFishs.getFishs())
         debugger
         this.loadGun();
         for (let i = 0; i < Fish.generator.amount; i++) Fish.generator.create()
